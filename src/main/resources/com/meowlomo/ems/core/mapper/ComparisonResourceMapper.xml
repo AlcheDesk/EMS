@@ -1,0 +1,386 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.meowlomo.ems.core.mapper.WorkerAvaliableResourceMapper">
+    <resultMap id="BaseResultMap" type="com.meowlomo.ems.core.model.WorkerAvaliableResource">
+        <result column="id" jdbcType="BIGINT" property="id" />
+        <result column="cpu_core" jdbcType="INTEGER" property="cpuCore" />
+        <result column="ram" jdbcType="INTEGER" property="ram" />
+        <result column="bandwidth" jdbcType="INTEGER" property="bandwidth" />
+        <result column="interactive" jdbcType="BIT" property="interactive" />
+        <result column="group_id" jdbcType="INTEGER" property="group" typeHandler="com.meowlomo.ems.typehandler.GroupTypeHandler" />
+        <result column="operating_system_id" jdbcType="BIGINT" property="operatingSystem" typeHandler="com.meowlomo.ems.typehandler.OperatingSystemTypeHandler" />
+        <result column="status_id" jdbcType="BIGINT" property="status" typeHandler="com.meowlomo.ems.typehandler.StatusTypeHandler" />
+        <result column="uuid" jdbcType="OTHER" property="uuid" typeHandler="com.meowlomo.ems.typehandler.UUIDTypeHandler" />
+    </resultMap>
+    <sql id="Example_Where_Clause">
+        <where>
+            <foreach collection="oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" prefixOverrides="and" suffix=")">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and
+                                    #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                        <foreach collection="criteria.uuidCriteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition}
+                                    #{criterion.value,typeHandler=com.meowlomo.ems.typehandler.UUIDTypeHandler}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition}
+                                    #{criterion.value,typeHandler=com.meowlomo.ems.typehandler.UUIDTypeHandler}
+                                    and
+                                    #{criterion.secondValue,typeHandler=com.meowlomo.ems.typehandler.UUIDTypeHandler}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                                        #{listItem,typeHandler=com.meowlomo.ems.typehandler.UUIDTypeHandler}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                        <foreach collection="criteria.groupCriteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition}
+                                    #{criterion.value,typeHandler=com.meowlomo.ems.typehandler.GroupTypeHandler}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition}
+                                    #{criterion.value,typeHandler=com.meowlomo.ems.typehandler.GroupTypeHandler}
+                                    and
+                                    #{criterion.secondValue,typeHandler=com.meowlomo.ems.typehandler.GroupTypeHandler}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                                        #{listItem,typeHandler=com.meowlomo.ems.typehandler.GroupTypeHandler}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                        <foreach collection="criteria.statusCriteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition}
+                                    #{criterion.value,typeHandler=com.meowlomo.ems.typehandler.StatusTypeHandler}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition}
+                                    #{criterion.value,typeHandler=com.meowlomo.ems.typehandler.StatusTypeHandler}
+                                    and
+                                    #{criterion.secondValue,typeHandler=com.meowlomo.ems.typehandler.StatusTypeHandler}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                                        #{listItem,typeHandler=com.meowlomo.ems.typehandler.StatusTypeHandler}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                        <foreach collection="criteria.operatingSystemCriteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition}
+                                    #{criterion.value,typeHandler=com.meowlomo.ems.typehandler.OperatingSystemTypeHandler}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition}
+                                    #{criterion.value,typeHandler=com.meowlomo.ems.typehandler.OperatingSystemTypeHandler}
+                                    and
+                                    #{criterion.secondValue,typeHandler=com.meowlomo.ems.typehandler.OperatingSystemTypeHandler}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                                        #{listItem,typeHandler=com.meowlomo.ems.typehandler.OperatingSystemTypeHandler}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Base_Column_List">
+        id, uuid, group_id, cpu_core, ram, bandwidth, interactive, status_id,
+        operating_system_id
+    </sql>
+    <select id="selectByExampleForUpdate" parameterType="com.meowlomo.ems.core.model.WorkerAvaliableResourceExample" resultMap="BaseResultMap">
+        select
+        <if test="distinct">
+            distinct
+        </if>
+        <include refid="Base_Column_List" />
+        from task
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause" />
+        </if>
+        <if test="orderByClause != null">
+            order by ${orderByClause}
+        </if>
+        for update skip locked
+    </select>
+    <select id="selectByPrimaryKeyForUpdate" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from task
+        where id = #{id,jdbcType=BIGINT}
+        for update skip locked
+    </select>
+    <select id="getWorkerCurrentResourceByUUID" parameterType="java.util.UUID" resultMap="BaseResultMap">
+        select
+        (max(workers.cpu_core) - sum(tasks.cpu_core)) as cpu_core,
+        (max(workers.ram) - sum(tasks.ram)) as ram,
+        (max(workers.bandwidth) -
+        sum(tasks.bandwidth)) as bandwidth,
+        workers.group_id,
+        workers.status_id,
+        workers.operating_system_id,
+        workers.id,
+        workers.uuid,
+        tasks.interactive
+        from task_worker_link links
+        inner join task
+        tasks on links.task_id = tasks.id
+        inner join worker
+        workers on links.worker_id = workers.id
+        where tasks.status_id
+        not in (select id from status where name in
+        ('DONE','PASS','ERROR'))
+        and links.active is true
+        and workers.uuid =
+        #{uuid,jdbcType=OTHER,typeHandler=com.meowlomo.ems.typehandler.UUIDTypeHandler}
+        group by tasks.interactive,
+        workers.operating_system_id,
+        workers.group_id, workers.status_id, wokers.id, workers.uuid;
+    </select>
+    <select id="getWorkerCurrentResource" resultMap="BaseResultMap">
+        select
+        worker_links.workerid as id,
+        worker_links.workeruuid as
+        uuid,
+        worker_links.group_id,
+        worker_links.status_id,
+        worker_links.operating_system_id,
+        CASE
+        WHEN sum(tasks.cpu_core)
+        is null
+        THEN worker_links.cpu_core
+        ELSE (worker_links.cpu_core - sum(tasks.cpu_core))
+        END as cpu_core,
+        CASE
+        WHEN
+        sum(tasks.ram) is null THEN worker_links.ram
+        ELSE (worker_links.ram - sum(tasks.ram))
+        END as ram,
+        CASE
+        WHEN
+        sum(tasks.bandwidth) is null
+        THEN worker_links.bandwidth
+        ELSE (worker_links.bandwidth - sum(tasks.bandwidth))
+        END
+        as bandwidth,
+        CASE
+        WHEN sum(tasks.interactive::int) > 0 THEN 'true'::boolean
+        ELSE 'false'::boolean
+        END as
+        interactive
+        from (
+        select workers.id as workerid,
+        workers.uuid as workeruuid,
+        workers.ram, workers.cpu_core,
+        workers.bandwidth, workers.status_id,
+        workers.operating_system_id,
+        workers.group_id,
+        links.task_id
+        from worker
+        workers
+        left join task_worker_link links on links.worker_id =
+        workers.id
+        where workers.status_id in (select id
+        from status where name in
+        ('FREE','WORKING'))
+        ) as worker_links
+        left join task tasks on worker_links.task_id =
+        tasks.id
+        group by worker_links.workerid,
+        worker_links.cpu_core,
+        worker_links.ram,
+        worker_links.bandwidth,
+        worker_links.group_id,
+        worker_links.operating_system_id,
+        worker_links.status_id,
+        worker_links.workeruuid;
+    </select>
+    <select id="selectByExample" parameterType="com.meowlomo.ems.core.model.WorkerAvaliableResourceExample" resultMap="BaseResultMap">
+        select
+        <if test="distinct">
+            distinct
+        </if>
+        <include refid="Base_Column_List" />
+        from(
+        select
+        worker_links.workerid as id,
+        worker_links.workeruuid as uuid,
+        worker_links.group_id,
+        worker_links.status_id,
+        worker_links.operating_system_id,
+        CASE
+        WHEN sum(tasks.cpu_core) is null THEN
+        worker_links.cpu_core
+        ELSE
+        (worker_links.cpu_core - sum(tasks.cpu_core))
+        END as cpu_core,
+        CASE
+        WHEN sum(tasks.ram)
+        is null THEN worker_links.ram
+        ELSE (worker_links.ram - sum(tasks.ram))
+        END as ram,
+        CASE
+        WHEN sum(tasks.bandwidth) is
+        null THEN worker_links.bandwidth
+        ELSE (worker_links.bandwidth - sum(tasks.bandwidth))
+        END as bandwidth,
+        CASE
+        WHEN
+        sum(tasks.interactive::int) > 0 THEN 'true'
+        ELSE 'false'
+        END as interactive
+        from (
+        select workers.id as workerid,
+        workers.uuid as workeruuid,
+        workers.ram,
+        workers.cpu_core,
+        workers.bandwidth, workers.status_id,
+        workers.operating_system_id,
+        workers.group_id,
+        links.task_id
+        from worker workers
+        left join task_worker_link links on
+        links.worker_id = workers.id
+        where workers.status_id in (select id
+        from status where name in
+        ('FREE','WORKING'))
+        )
+        as worker_links
+        left join task tasks on worker_links.task_id = tasks.id
+        group by worker_links.workerid,
+        worker_links.cpu_core,
+        worker_links.ram,
+        worker_links.bandwidth,
+        worker_links.group_id,
+        worker_links.operating_system_id,
+        worker_links.status_id,
+        worker_links.workeruuid
+        ) as worker_resources
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause" />
+        </if>
+        <if test="orderByClause != null">
+            order by ${orderByClause}
+        </if>
+    </select>
+    <select id="selectByExampleWithRowbounds" parameterType="com.meowlomo.ems.core.model.WorkerAvaliableResourceExample" resultMap="BaseResultMap">
+        select
+        <if test="distinct">
+            distinct
+        </if>
+        <include refid="Base_Column_List" />
+        from(
+        select
+        worker_links.workerid as id,
+        worker_links.workeruuid as uuid,
+        worker_links.group_id,
+        worker_links.status_id,
+        worker_links.operating_system_id,
+        CASE
+        WHEN sum(tasks.cpu_core) is null THEN
+        worker_links.cpu_core
+        ELSE
+        (worker_links.cpu_core - sum(tasks.cpu_core))
+        END as cpu_core,
+        CASE
+        WHEN sum(tasks.ram)
+        is null THEN worker_links.ram
+        ELSE (worker_links.ram - sum(tasks.ram))
+        END as ram,
+        CASE
+        WHEN sum(tasks.bandwidth) is
+        null THEN worker_links.bandwidth
+        ELSE (worker_links.bandwidth - sum(tasks.bandwidth))
+        END as bandwidth,
+        CASE
+        WHEN
+        sum(tasks.interactive::int) > 0 THEN 'true'::boolean
+        ELSE 'false'::boolean
+        END as interactive
+        from (
+        select
+        workers.id as workerid,
+        workers.uuid as workeruuid,
+        workers.ram, workers.cpu_core,
+        workers.bandwidth,
+        workers.status_id,
+        workers.operating_system_id,
+        workers.group_id,
+        links.task_id
+        from worker workers
+        left join
+        task_worker_link links on links.worker_id = workers.id
+        where workers.status_id in
+        (select id from status where
+        name in
+        ('FREE','WORKING'))
+        ) as worker_links
+        left join task tasks on worker_links.task_id = tasks.id
+        group by
+        worker_links.workerid,
+        worker_links.cpu_core,
+        worker_links.ram,
+        worker_links.bandwidth,
+        worker_links.group_id,
+        worker_links.operating_system_id,
+        worker_links.status_id,
+        worker_links.workeruuid
+        ) as worker_resources
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause" />
+        </if>
+        <if test="orderByClause != null">
+            order by ${orderByClause}
+        </if>
+    </select>
+</mapper>

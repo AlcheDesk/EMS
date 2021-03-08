@@ -1,0 +1,1 @@
+ALTER TABLE "status" ADD CONSTRAINT status_uk_name UNIQUE ("name");

@@ -1,0 +1,1 @@
+ALTER TABLE "worker" RENAME COLUMN "worker_uuid" TO uuid;

@@ -1,0 +1,3 @@
+INSERT INTO status (name) VALUES ('HOLD') ON CONFLICT DO NOTHING;
+INSERT INTO status (name) VALUES ('FREE') ON CONFLICT DO NOTHING;
+INSERT into "group" (name,preloaded) values ('HOLD',true) ON CONFLICT DO NOTHING;

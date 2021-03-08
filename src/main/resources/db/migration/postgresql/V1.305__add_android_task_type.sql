@@ -1,0 +1,1 @@
+INSERT INTO task_type (id, name, uuid, is_preloaded, is_active ) VALUES (3, 'Android', 'f0a29eb5-c213-47cf-9c72-e3a1dfc7507b', true, true);

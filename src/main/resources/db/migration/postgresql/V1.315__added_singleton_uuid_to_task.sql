@@ -1,0 +1,2 @@
+ALTER TABLE "task" ADD COLUMN singleton_uuid uuid;
+ALTER TABLE "task" ADD CONSTRAINT task_ck_singleton CHECK ((singleton IS TRUE AND singleton_uuid IS NOT NULL) OR (singleton IS FALSE AND singleton_uuid IS NULL));

@@ -1,0 +1,1 @@
+ALTER TABLE "worker" ALTER COLUMN active SET DEFAULT false;

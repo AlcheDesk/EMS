@@ -1,0 +1,10 @@
+ALTER TABLE "task" ADD COLUMN execution_start_at TIMESTAMP WITH TIME zone;
+ALTER TABLE "task" ADD COLUMN execution_end_at TIMESTAMP WITH TIME zone;
+ALTER TABLE "task" ADD COLUMN max_retry INTEGER;
+UPDATE "task" SET max_retry = 0 WHERE id IS NOT NULL;
+ALTER TABLE "task" ALTER COLUMN max_retry SET NOT NULL;
+ALTER TABLE "task" ALTER COLUMN max_retry SET DEFAULT 0;
+ALTER TABLE "task" ADD COLUMN retry_number INTEGER;
+UPDATE "task" SET retry_number = 0 WHERE id IS NOT NULL;
+ALTER TABLE "task" ALTER COLUMN retry_number SET NOT NULL;
+ALTER TABLE "task" ALTER COLUMN retry_number SET DEFAULT 0;

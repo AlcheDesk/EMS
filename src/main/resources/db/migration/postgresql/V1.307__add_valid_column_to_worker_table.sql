@@ -1,0 +1,4 @@
+ALTER TABLE "worker" ADD COLUMN valid BOOLEAN;
+UPDATE "worker" SET valid = true WHERE valid IS NULL;
+ALTER TABLE "worker" ALTER COLUMN valid SET NOT NULL;
+ALTER TABLE "worker" ALTER COLUMN valid SET DEFAULT true;

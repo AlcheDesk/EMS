@@ -1,0 +1,1 @@
+update operating_system set name = 'MACOSX' where name = 'Mac OS X';

@@ -1,0 +1,1 @@
+UPDATE "task_type" SET name = 'JSON' WHERE id = 1 AND name = 'meowlomoAtm';

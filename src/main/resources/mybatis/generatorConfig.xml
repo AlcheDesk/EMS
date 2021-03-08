@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+  PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+  "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+<generatorConfiguration>
+    <!-- 引入配置文件 -->
+    <!--<property resource="file:///D:\Development\WorkPlace\ems-api\src\main\mybatis_generator\init.property"/> -->
+
+    <!-- 指定数据连接驱动jar地址 -->
+    <!-- <classPathEntry location="D:/Development/WorkPlace/EMS_API/mybatis_generator/postgresql-42.2.5.jar" /> -->
+
+    <context id="postgresql" targetRuntime="MyBatis3">
+
+        <!-- generate entity时，生成serialVersionUID -->
+        <plugin type="org.mybatis.generator.plugins.SerializablePlugin" />
+        <!-- generate entity时，生成hashcode和equals方法 -->
+        <plugin type="org.mybatis.generator.plugins.EqualsHashCodePlugin" />
+        <!-- genenat entity时,生成toString -->
+        <plugin type="org.mybatis.generator.plugins.ToStringPlugin" />
+        <plugin type="org.mybatis.generator.plugins.RowBoundsPlugin" />
+        <plugin type="org.mybatis.generator.plugins.CaseInsensitiveLikePlugin" />
+        <!-- Example Criteria 增强插件 -->
+        <plugin type="com.itfsw.mybatis.generator.plugins.ExampleEnhancedPlugin" />
+        <!-- 查询单条数据插件 -->
+        <plugin type="com.itfsw.mybatis.generator.plugins.SelectOneByExamplePlugin" />
+        <!-- 批量插入插件 -->
+        <plugin type="com.itfsw.mybatis.generator.plugins.BatchInsertPlugin">
+            <!-- 开启后可以实现官方插件根据属性是否为空决定是否插入该字段功能 ！需开启allowMultiQueries=true多条sql提交操作，所以不建议使用！插件默认不开启 -->
+            <property name="allowMultiQueries" value="false" />
+        </plugin>
+        <!-- 数据Model属性对应Column获取插件 -->
+        <plugin type="com.itfsw.mybatis.generator.plugins.ModelColumnPlugin" />
+        <!-- Selective选择插入更新增强插件 -->
+        <plugin type="com.itfsw.mybatis.generator.plugins.SelectiveEnhancedPlugin" />
+        <plugin type="com.itfsw.mybatis.generator.plugins.SelectSelectivePlugin" />
+        <plugin type="com.itfsw.mybatis.generator.plugins.LogicalDeletePlugin">
+            <!-- 这里配置的是全局逻辑删除列和逻辑删除值，当然在table中配置的值会覆盖该全局配置 -->
+            <!-- 逻辑删除列类型只能为数字、字符串或者布尔类型 -->
+            <property name="logicalDeleteColumn" value="is_deleted" />
+            <!-- 逻辑删除-已删除值 -->
+            <property name="logicalDeleteValue" value="true" />
+            <!-- 逻辑删除-未删除值 -->
+            <property name="logicalUnDeleteValue" value="false" />
+            <!-- 逻辑删除常量名称，不配置默认为 IS_DELETED -->
+            <property name="logicalDeleteConstName" value="IS_DELETED" />
+            <!-- 逻辑删除常量（未删除）名称，不配置默认为 NOT_DELETED -->
+            <property name="logicalUnDeleteConstName" value="NOT_DELETED" />
+        </plugin>
+        <commentGenerator>
+            <property name="suppressAllComments" value="true" /><!-- 是否取消注释 -->
+        </commentGenerator>
+
+        <!-- jdbc连接 -->
+        <jdbcConnection driverClass="org.postgresql.Driver" connectionURL="jdbc:postgresql://localhost:5432/EMS" userId="testadmin" password="P@rty888" />
+
+        <!-- 类型转换 -->
+        <javaTypeResolver>
+            <!-- 是否使用bigDecimal， false可自动转化以下类型（Long, Integer, Short, etc.） -->
+            <property name="forceBigDecimals" value="false" />
+        </javaTypeResolver>
+
+        <!-- 生成实体类地址 -->
+        <javaModelGenerator targetPackage="com.meowlomo.ems.core.model" targetProject="src/main/java">
+            <!-- 是否在当前路径下新加一层schema,eg：fase路径com.meowlomo.ems.model， true:com.meowlomo.ems.core.model.[schemaName] -->
+            <property name="enableSubPackages" value="false" />
+            <!-- 是否针对string类型的字段在set的时候进行trim调用 -->
+            <property name="trimStrings" value="true" />
+        </javaModelGenerator>
+
+        <!-- 生成mapxml文件 -->
+        <sqlMapGenerator targetPackage="com.meowlomo.ems.core.mapper" targetProject="src/main/resources">
+            <!-- 是否在当前路径下新加一层schema,eg：fase路径com.meowlomo.ems.model， true:com.meowlomo.ems.core.model.[schemaName] -->
+            <property name="enableSubPackages" value="false" />
+        </sqlMapGenerator>
+
+        <!-- 生成mapxml对应client，也就是接口dao -->
+        <javaClientGenerator targetPackage="com.meowlomo.ems.core.mapper" targetProject="src/main/java" type="XMLMAPPER">
+            <!-- 是否在当前路径下新加一层schema,eg：fase路径com.meowlomo.ems.model， true:com.meowlomo.ems.core.model.[schemaName] -->
+            <property name="enableSubPackages" value="false" />
+        </javaClientGenerator>
+
+        <!-- 配置表信息 -->
+        <table tableName="%" schema="public">
+            <!-- chaange column style to getStartDate -->
+            <property name="useActualColumnNames" value="false" />
+            <!-- removed schema in generated sql -->
+            <property name="ignoreQualifiersAtRuntime" value="true" />
+            <generatedKey column="id" sqlStatement="JDBC" identity="true" />
+            <columnOverride column="id" jdbcType="BIGINT" />
+            <columnOverride column="account_type_id" property="type" jdbcType="OTHER" javaType="java.lang.String" typeHandler="com.meowlomo.ems.typehandler.AccountTypeTypeHandler" />
+            <columnOverride column="group_id" property="group" jdbcType="OTHER" javaType="java.lang.String" typeHandler="com.meowlomo.ems.typehandler.GroupTypeHandler" />
+            <columnOverride column="status_id" property="status" jdbcType="OTHER" javaType="java.lang.String" typeHandler="com.meowlomo.ems.typehandler.StatusTypeHandler" />
+            <columnOverride column="instruction_action_id" property="instructionAction" jdbcType="OTHER" javaType="java.lang.String" typeHandler="com.meowlomo.ems.typehandler.InstructionActionTypeHandler" />
+            <columnOverride column="element_type_id" property="elementType" jdbcType="OTHER" javaType="java.lang.String" typeHandler="com.meowlomo.ems.typehandler.ElementTypeTypeHandler" />
+            <columnOverride column="system_requirement_id" property="system_requirement" jdbcType="OTHER" javaType="java.lang.String" typeHandler="com.meowlomo.ems.typehandler.EnvironmentTypeTypeHandler" />
+            <columnOverride column="element_locator_type_id" property="elementLocatorType" jdbcType="OTHER" javaType="java.lang.String" typeHandler="com.meowlomo.ems.typehandler.ElementLocatorTypeTypeHandler" />
+            <columnOverride column="project_type_id" property="projectType" jdbcType="OTHER" javaType="java.lang.String" typeHandler="com.meowlomo.ems.typehandler.ProjectTypeTypeHandler" />
+            <columnOverride column="file_type_id" property="fileType" jdbcType="OTHER" javaType="java.lang.String" typeHandler="com.meowlomo.ems.typehandler.FileTypeTypeHandler" />
+            <columnOverride column="driver_type_id" property="driverType" jdbcType="OTHER" javaType="java.lang.String" typeHandler="com.meowlomo.ems.typehandler.DriverTypeTypeHandler" />
+            <columnOverride column="run_set_type_id" property="runSetType" jdbcType="OTHER" javaType="java.lang.String" typeHandler="com.meowlomo.ems.typehandler.RunSetTypeTypeHandler" />
+            <columnOverride column="test_case_type_id" property="testCaseType" jdbcType="OTHER" javaType="java.lang.String" typeHandler="com.meowlomo.ems.typehandler.TestCaseTypeTypeHandler" />
+            <columnOverride column="test_case_folder_type_id" property="testCaseFolderType" jdbcType="OTHER" javaType="java.lang.String" typeHandler="com.meowlomo.ems.typehandler.TestCaseFolderTypeTypeHandler" />
+            <columnOverride column="run_type_id" property="runType" jdbcType="OTHER" javaType="java.lang.String" typeHandler="com.meowlomo.ems.typehandler.RunTypeTypeHandler" />
+            <columnOverride column="instruction_type_id" property="instructionType" jdbcType="OTHER" javaType="java.lang.String" typeHandler="com.meowlomo.ems.typehandler.InstructionTypeTypeHandler" />
+            <columnOverride column="instruction_option_id" property="instructionOption" jdbcType="OTHER" javaType="java.lang.String" typeHandler="com.meowlomo.ems.typehandler.InstructionOptionTypeHandler" />
+            <columnOverride column="test_case_option_id" property="testCaseOption" jdbcType="OTHER" javaType="java.lang.String" typeHandler="com.meowlomo.ems.typehandler.TestCaseOptionTypeHandler" />
+            <columnOverride column="color_id" property="color" jdbcType="OTHER" javaType="java.lang.String" typeHandler="com.meowlomo.ems.typehandler.ColorTypeHandler" />
+            <columnOverride column="log_level_id" property="logLevel" jdbcType="OTHER" javaType="java.lang.String" typeHandler="com.meowlomo.ems.typehandler.LogLevelTypeHandler" />
+            <columnOverride column="step_log_type_id" property="stepLogType" jdbcType="OTHER" javaType="java.lang.String" typeHandler="com.meowlomo.ems.typehandler.StepLogTypeTypeHandler" />
+            <columnOverride column="source_type_id" property="sourceType" jdbcType="OTHER" javaType="java.lang.String" typeHandler="com.meowlomo.ems.typehandler.SourceTypeTypeHandler" />
+            <columnOverride column="worker_type_id" property="type" jdbcType="OTHER" javaType="java.lang.String" typeHandler="com.meowlomo.ems.typehandler.WorkerTypeTypeHandler" />
+            <columnOverride column="task_type_id" property="type" jdbcType="OTHER" javaType="java.lang.String" typeHandler="com.meowlomo.ems.typehandler.TaskTypeTypeHandler" />
+            <columnOverride column="job_type_id" property="type" jdbcType="OTHER" javaType="java.lang.String" typeHandler="com.meowlomo.ems.typehandler.JobTypeTypeHandler" />
+            <columnOverride column="execution_control_type_id" property="type" jdbcType="OTHER" javaType="java.lang.String" typeHandler="com.meowlomo.ems.typehandler.ExecutionControlTypeTypeHandler" />
+            <columnOverride column="operating_system_id" property="operatingSystem" jdbcType="OTHER" javaType="java.lang.String" typeHandler="com.meowlomo.ems.typehandler.OperatingSystemTypeHandler" />
+
+            <columnOverride column="execution_start_at" isGeneratedAlways="true" />
+            <columnOverride column="execution_end_at" isGeneratedAlways="true" />
+            <columnOverride column="updated_at" isGeneratedAlways="true" />
+            <columnOverride column="created_at" isGeneratedAlways="true" />
+            <columnOverride column="overridable_fields" isGeneratedAlways="true" />
+
+            <!-- boolean columns -->
+            <!-- json type columns -->
+            <columnOverride column="is_active" property="active" />
+            <columnOverride column="is_finished" property="finished" />
+            <columnOverride column="is_predefined_value_required" property="predefinedValueRequired" />
+            <columnOverride column="is_prefered" property="prefered" />
+            <columnOverride column="is_predefined" property="predefined" />
+            <columnOverride column="is_value_required" property="valueRequired" />
+            <columnOverride column="is_reserved" property="reserved" />
+            <columnOverride column="is_flagged" property="flagged" />
+            <columnOverride column="is_deleted" property="deleted" />
+            
+            <columnOverride column="parameter" property="parameter" javaType="com.fasterxml.jackson.databind.JsonNode" typeHandler="com.meowlomo.ems.typehandler.JsonNodeTypeHandler" />
+            <columnOverride column="input_parameter" property="inputParameter" javaType="com.fasterxml.jackson.databind.JsonNode" typeHandler="com.meowlomo.ems.typehandler.JsonNodeTypeHandler" />
+            <columnOverride column="output_parameter" property="outputParameter" javaType="com.fasterxml.jackson.databind.JsonNode" typeHandler="com.meowlomo.ems.typehandler.JsonNodeTypeHandler" />
+            <columnOverride column="data" property="data" javaType="com.fasterxml.jackson.databind.JsonNode" typeHandler="com.meowlomo.ems.typehandler.JsonNodeTypeHandler" />
+            <columnOverride column="instruction" property="instruction" javaType="com.fasterxml.jackson.databind.JsonNode" typeHandler="com.meowlomo.ems.typehandler.JsonNodeTypeHandler" />
+            <columnOverride column="test_case" property="testCase" javaType="com.fasterxml.jackson.databind.JsonNode" typeHandler="com.meowlomo.ems.typehandler.JsonNodeTypeHandler" />
+            <columnOverride column="run" property="run" javaType="com.fasterxml.jackson.databind.JsonNode" typeHandler="com.meowlomo.ems.typehandler.JsonNodeTypeHandler" />
+            <columnOverride column="driver_pack" property="driverPack" javaType="com.fasterxml.jackson.databind.JsonNode" typeHandler="com.meowlomo.ems.typehandler.JsonNodeTypeHandler" />
+            <columnOverride column="execution_result" property="executionResult" javaType="com.fasterxml.jackson.databind.JsonNode" typeHandler="com.meowlomo.ems.typehandler.JsonNodeTypeHandler" />
+            <columnOverride column="query_parameters" property="queryParameters" javaType="com.fasterxml.jackson.databind.JsonNode" typeHandler="com.meowlomo.ems.typehandler.JsonNodeTypeHandler" />
+            <columnOverride column="request_headers" property="requestHeaders" javaType="com.fasterxml.jackson.databind.JsonNode" typeHandler="com.meowlomo.ems.typehandler.JsonNodeTypeHandler" />
+            <columnOverride column="json_schema" property="jsonSchema" javaType="com.fasterxml.jackson.databind.JsonNode" typeHandler="com.meowlomo.ems.typehandler.JsonNodeTypeHandler" />
+            <columnOverride column="properties" property="properties" javaType="com.fasterxml.jackson.databind.JsonNode" typeHandler="com.meowlomo.ems.typehandler.JsonNodeTypeHandler" />
+            <columnOverride column="property" property="property" javaType="com.fasterxml.jackson.databind.JsonNode" typeHandler="com.meowlomo.ems.typehandler.JsonNodeTypeHandler" />
+            <columnOverride column="test_case_overwrite" property="testCaseOverwrite" javaType="com.fasterxml.jackson.databind.JsonNode" typeHandler="com.meowlomo.ems.typehandler.JsonNodeTypeHandler" />
+            <columnOverride column="uuid" javaType="java.util.UUID" isGeneratedAlways="true" typeHandler="com.meowlomo.ems.typehandler.UUIDTypeHandler" />
+            <columnOverride column="token" javaType="java.util.UUID" typeHandler="com.meowlomo.ems.typehandler.UUIDTypeHandler" />
+            <columnOverride column="file_uuid" javaType="java.util.UUID" isGeneratedAlways="true" typeHandler="com.meowlomo.ems.typehandler.UUIDTypeHandler" />
+            <columnOverride column="job_uuid" javaType="java.util.UUID" typeHandler="com.meowlomo.ems.typehandler.UUIDTypeHandler" />
+            <columnOverride column="task_uuid" javaType="java.util.UUID" typeHandler="com.meowlomo.ems.typehandler.UUIDTypeHandler" />
+            <columnOverride column="user_uuid" javaType="java.util.UUID" typeHandler="com.meowlomo.ems.typehandler.UUIDTypeHandler" />
+            <columnOverride column="activity_uuid" javaType="java.util.UUID" typeHandler="com.meowlomo.ems.typehandler.UUIDTypeHandler" />
+            <columnOverride column="external_identifier" javaType="java.util.UUID" typeHandler="com.meowlomo.ems.typehandler.UUIDTypeHandler" />
+            <columnOverride column="primary_task_uuid" javaType="java.util.UUID" typeHandler="com.meowlomo.ems.typehandler.UUIDTypeHandler" />
+            <columnOverride column="secondary_task_uuid" javaType="java.util.UUID" typeHandler="com.meowlomo.ems.typehandler.UUIDTypeHandler" />
+            <columnOverride column="singleton_uuid" javaType="java.util.UUID" typeHandler="com.meowlomo.ems.typehandler.UUIDTypeHandler" />
+            <columnOverride column="synchronized_execution_uuid" javaType="java.util.UUID" typeHandler="com.meowlomo.ems.typehandler.UUIDTypeHandler" />
+            <columnOverride column="xml_schema" property="xmlSchema" javaType="org.w3c.dom.Document" typeHandler="com.meowlomo.ems.typehandler.XMLTypeHandler" />
+        </table>
+
+    </context>
+</generatorConfiguration>

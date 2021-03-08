@@ -1,0 +1,580 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.meowlomo.ems.core.mapper.JobReferenceMapper">
+    <resultMap id="TaskResultMap" type="com.meowlomo.ems.core.model.Task">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="name" jdbcType="VARCHAR" property="name" />
+        <result column="uuid" jdbcType="OTHER" property="uuid" typeHandler="com.meowlomo.ems.typehandler.UUIDTypeHandler" />
+        <result column="priority" jdbcType="INTEGER" property="priority" />
+        <result column="task_type_id" jdbcType="OTHER" property="type" typeHandler="com.meowlomo.ems.typehandler.TaskTypeTypeHandler" />
+        <result column="group_id" jdbcType="OTHER" property="group" typeHandler="com.meowlomo.ems.typehandler.GroupTypeHandler" />
+        <result column="cpu_core_required" jdbcType="INTEGER" property="cpuCoreRequired" />
+        <result column="ram_required" jdbcType="INTEGER" property="ramRequired" />
+        <result column="bandwidth_required" jdbcType="INTEGER" property="bandwidthRequired" />
+        <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
+        <result column="updated_at" jdbcType="TIMESTAMP" property="updatedAt" />
+        <result column="interactive" jdbcType="BIT" property="interactive" />
+        <result column="status_id" jdbcType="OTHER" property="status" typeHandler="com.meowlomo.ems.typehandler.StatusTypeHandler" />
+        <result column="parameter" jdbcType="OTHER" property="parameter" typeHandler="com.meowlomo.ems.typehandler.JsonNodeTypeHandler" />
+        <result column="timeout" jdbcType="BIGINT" property="timeout" />
+        <result column="job_id" jdbcType="BIGINT" property="jobId" />
+        <result column="is_finished" jdbcType="BIT" property="finished" />
+        <result column="data" jdbcType="OTHER" property="data" typeHandler="com.meowlomo.ems.typehandler.JsonNodeTypeHandler" />
+        <result column="operating_system_id" jdbcType="OTHER" property="operatingSystem" typeHandler="com.meowlomo.ems.typehandler.OperatingSystemTypeHandler" />
+        <result column="execution_result" jdbcType="OTHER" property="executionResult" typeHandler="com.meowlomo.ems.typehandler.JsonNodeTypeHandler" />
+        <result column="execution_start_at" jdbcType="TIMESTAMP" property="executionStartAt" />
+        <result column="execution_end_at" jdbcType="TIMESTAMP" property="executionEndAt" />
+        <result column="max_retry" jdbcType="INTEGER" property="maxRetry" />
+        <result column="retry_number" jdbcType="INTEGER" property="retryNumber" />
+        <result column="worker_id" jdbcType="BIGINT" property="workerId" />
+        <result column="singleton" jdbcType="BIT" property="singleton" />
+        <result column="external_identifier" jdbcType="OTHER" property="externalIdentifier" typeHandler="com.meowlomo.ems.typehandler.UUIDTypeHandler" />
+        <result column="singleton_uuid" jdbcType="OTHER" property="singletonUuid" typeHandler="com.meowlomo.ems.typehandler.UUIDTypeHandler" />
+        <result column="synchronized_execution" jdbcType="BIT" property="synchronizedExecution" />
+        <result column="synchronized_execution_uuid" jdbcType="OTHER" property="synchronizedExecutionUuid" typeHandler="com.meowlomo.ems.typehandler.UUIDTypeHandler" />
+    </resultMap>
+    <resultMap id="LogResultMap" type="com.meowlomo.ems.core.model.JobLog">
+        <result column="id" jdbcType="BIGINT" property="id" />
+        <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
+        <result column="message" jdbcType="VARCHAR" property="message" />
+        <result column="job_id" jdbcType="BIGINT" property="jobId" />
+    </resultMap>
+    <resultMap id="BaseResultMap" type="com.meowlomo.ems.core.model.Job">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="name" jdbcType="VARCHAR" property="name" />
+        <result column="job_type_id" jdbcType="OTHER" property="type" typeHandler="com.meowlomo.ems.typehandler.JobTypeTypeHandler" />
+        <result column="description" jdbcType="VARCHAR" property="description" />
+        <result column="priority" jdbcType="INTEGER" property="priority" />
+        <result column="uuid" jdbcType="OTHER" property="uuid" typeHandler="com.meowlomo.ems.typehandler.UUIDTypeHandler" />
+        <result column="status_id" jdbcType="OTHER" property="status" typeHandler="com.meowlomo.ems.typehandler.StatusTypeHandler" />
+        <result column="is_built" jdbcType="BIT" property="isBuilt" />
+        <result column="is_finished" jdbcType="BIT" property="finished" />
+        <result column="parameter" jdbcType="OTHER" property="parameter" typeHandler="com.meowlomo.ems.typehandler.JsonNodeTypeHandler" />
+        <result column="group_id" jdbcType="OTHER" property="group" typeHandler="com.meowlomo.ems.typehandler.GroupTypeHandler" />
+        <result column="updated_at" jdbcType="TIMESTAMP" property="updatedAt" />
+        <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
+        <result column="external_identifier" jdbcType="OTHER" property="externalIdentifier" typeHandler="com.meowlomo.ems.typehandler.UUIDTypeHandler" />
+        <result column="execution_start_at" jdbcType="TIMESTAMP" property="executionStartAt" />
+        <result column="execution_end_at" jdbcType="TIMESTAMP" property="executionEndAt" />
+        <collection property="tasks" column="id" select="getTasksByJob" />
+        <collection property="logs" column="id" select="getLogsByJob" />
+    </resultMap>
+    <sql id="Example_Where_Clause">
+        <where>
+            <foreach collection="oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" prefixOverrides="and" suffix=")">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                        <foreach collection="criteria.typeCriteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value,typeHandler=com.meowlomo.ems.typehandler.JobTypeTypeHandler}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value,typeHandler=com.meowlomo.ems.typehandler.JobTypeTypeHandler} and #{criterion.secondValue,typeHandler=com.meowlomo.ems.typehandler.JobTypeTypeHandler}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                                        #{listItem,typeHandler=com.meowlomo.ems.typehandler.JobTypeTypeHandler}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                        <foreach collection="criteria.uuidCriteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value,typeHandler=com.meowlomo.ems.typehandler.UUIDTypeHandler}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value,typeHandler=com.meowlomo.ems.typehandler.UUIDTypeHandler} and #{criterion.secondValue,typeHandler=com.meowlomo.ems.typehandler.UUIDTypeHandler}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                                        #{listItem,typeHandler=com.meowlomo.ems.typehandler.UUIDTypeHandler}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                        <foreach collection="criteria.statusCriteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value,typeHandler=com.meowlomo.ems.typehandler.StatusTypeHandler}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value,typeHandler=com.meowlomo.ems.typehandler.StatusTypeHandler} and #{criterion.secondValue,typeHandler=com.meowlomo.ems.typehandler.StatusTypeHandler}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                                        #{listItem,typeHandler=com.meowlomo.ems.typehandler.StatusTypeHandler}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                        <foreach collection="criteria.parameterCriteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value,typeHandler=com.meowlomo.ems.typehandler.JsonNodeTypeHandler}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value,typeHandler=com.meowlomo.ems.typehandler.JsonNodeTypeHandler} and #{criterion.secondValue,typeHandler=com.meowlomo.ems.typehandler.JsonNodeTypeHandler}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                                        #{listItem,typeHandler=com.meowlomo.ems.typehandler.JsonNodeTypeHandler}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                        <foreach collection="criteria.groupCriteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value,typeHandler=com.meowlomo.ems.typehandler.GroupTypeHandler}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value,typeHandler=com.meowlomo.ems.typehandler.GroupTypeHandler} and #{criterion.secondValue,typeHandler=com.meowlomo.ems.typehandler.GroupTypeHandler}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                                        #{listItem,typeHandler=com.meowlomo.ems.typehandler.GroupTypeHandler}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                        <foreach collection="criteria.externalIdentifierCriteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value,typeHandler=com.meowlomo.ems.typehandler.UUIDTypeHandler}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value,typeHandler=com.meowlomo.ems.typehandler.UUIDTypeHandler} and #{criterion.secondValue,typeHandler=com.meowlomo.ems.typehandler.UUIDTypeHandler}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                                        #{listItem,typeHandler=com.meowlomo.ems.typehandler.UUIDTypeHandler}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Update_By_Example_Where_Clause">
+        <where>
+            <foreach collection="example.oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" prefixOverrides="and" suffix=")">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                        <foreach collection="criteria.typeCriteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value,typeHandler=com.meowlomo.ems.typehandler.JobTypeTypeHandler}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value,typeHandler=com.meowlomo.ems.typehandler.JobTypeTypeHandler} and #{criterion.secondValue,typeHandler=com.meowlomo.ems.typehandler.JobTypeTypeHandler}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                                        #{listItem,typeHandler=com.meowlomo.ems.typehandler.JobTypeTypeHandler}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                        <foreach collection="criteria.uuidCriteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value,typeHandler=com.meowlomo.ems.typehandler.UUIDTypeHandler}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value,typeHandler=com.meowlomo.ems.typehandler.UUIDTypeHandler} and #{criterion.secondValue,typeHandler=com.meowlomo.ems.typehandler.UUIDTypeHandler}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                                        #{listItem,typeHandler=com.meowlomo.ems.typehandler.UUIDTypeHandler}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                        <foreach collection="criteria.statusCriteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value,typeHandler=com.meowlomo.ems.typehandler.StatusTypeHandler}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value,typeHandler=com.meowlomo.ems.typehandler.StatusTypeHandler} and #{criterion.secondValue,typeHandler=com.meowlomo.ems.typehandler.StatusTypeHandler}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                                        #{listItem,typeHandler=com.meowlomo.ems.typehandler.StatusTypeHandler}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                        <foreach collection="criteria.parameterCriteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value,typeHandler=com.meowlomo.ems.typehandler.JsonNodeTypeHandler}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value,typeHandler=com.meowlomo.ems.typehandler.JsonNodeTypeHandler} and #{criterion.secondValue,typeHandler=com.meowlomo.ems.typehandler.JsonNodeTypeHandler}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                                        #{listItem,typeHandler=com.meowlomo.ems.typehandler.JsonNodeTypeHandler}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                        <foreach collection="criteria.groupCriteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value,typeHandler=com.meowlomo.ems.typehandler.GroupTypeHandler}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value,typeHandler=com.meowlomo.ems.typehandler.GroupTypeHandler} and #{criterion.secondValue,typeHandler=com.meowlomo.ems.typehandler.GroupTypeHandler}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                                        #{listItem,typeHandler=com.meowlomo.ems.typehandler.GroupTypeHandler}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                        <foreach collection="criteria.externalIdentifierCriteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value,typeHandler=com.meowlomo.ems.typehandler.UUIDTypeHandler}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value,typeHandler=com.meowlomo.ems.typehandler.UUIDTypeHandler} and #{criterion.secondValue,typeHandler=com.meowlomo.ems.typehandler.UUIDTypeHandler}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                                        #{listItem,typeHandler=com.meowlomo.ems.typehandler.UUIDTypeHandler}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Base_Column_List">
+        id, name, job_type_id, description, priority, uuid, status_id, is_built, is_finished,
+        parameter, group_id, updated_at, created_at, external_identifier, execution_start_at,
+        execution_end_at
+    </sql>
+    <select id="selectByExample" parameterType="com.meowlomo.ems.core.model.JobExample" resultMap="BaseResultMap">
+        select
+        <if test="distinct">
+            distinct
+        </if>
+        <include refid="Base_Column_List" />
+        from job
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause" />
+        </if>
+        <if test="orderByClause != null">
+            order by ${orderByClause}
+        </if>
+    </select>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from job
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <select id="getTasksByJob" parameterType="long" resultMap="TaskResultMap">
+        select
+        *
+        from task where job_id=#{jobId}
+    </select>
+    <select id="getLogsByJob" parameterType="long" resultMap="LogResultMap">
+        select
+        *
+        from job_log where job_id=#{jobId}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete from job
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+    <delete id="deleteByExample" parameterType="com.meowlomo.ems.core.model.JobExample">
+        delete from job
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause" />
+        </if>
+    </delete>
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.meowlomo.ems.core.model.Job" useGeneratedKeys="true">
+        insert into job (name, job_type_id,
+        description, priority, status_id,
+        parameter,
+        group_id
+        )
+        values
+        (#{name,jdbcType=VARCHAR},
+        #{type,jdbcType=OTHER,typeHandler=com.meowlomo.ems.typehandler.JobTypeTypeHandler},
+        #{description,jdbcType=VARCHAR}, #{priority,jdbcType=INTEGER},
+        #{status,jdbcType=OTHER,typeHandler=com.meowlomo.ems.typehandler.StatusTypeHandler},
+        #{parameter,jdbcType=OTHER,typeHandler=com.meowlomo.ems.typehandler.JsonNodeTypeHandler},
+        #{group,jdbcType=OTHER,typeHandler=com.meowlomo.ems.typehandler.GroupTypeHandler}
+        )
+    </insert>
+    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.meowlomo.ems.core.model.Job" useGeneratedKeys="true">
+        insert into job
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null">
+                name,
+            </if>
+            <if test="type != null">
+                job_type_id,
+            </if>
+            <if test="description != null">
+                description,
+            </if>
+            <if test="priority != null">
+                priority,
+            </if>
+            <if test="status != null">
+                status_id,
+            </if>
+            <if test="parameter != null">
+                parameter,
+            </if>
+            <if test="group != null">
+                group_id,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null">
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="type != null">
+                #{type,jdbcType=OTHER,typeHandler=com.meowlomo.ems.typehandler.JobTypeTypeHandler},
+            </if>
+            <if test="description != null">
+                #{description,jdbcType=VARCHAR},
+            </if>
+            <if test="priority != null">
+                #{priority,jdbcType=INTEGER},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=OTHER,typeHandler=com.meowlomo.ems.typehandler.StatusTypeHandler},
+            </if>
+            <if test="parameter != null">
+                #{parameter,jdbcType=OTHER,typeHandler=com.meowlomo.ems.typehandler.JsonNodeTypeHandler},
+            </if>
+            <if test="group != null">
+                #{group,jdbcType=OTHER,typeHandler=com.meowlomo.ems.typehandler.GroupTypeHandler},
+            </if>
+        </trim>
+    </insert>
+    <select id="countByExample" parameterType="com.meowlomo.ems.core.model.JobExample" resultType="java.lang.Long">
+        select count(*) from job
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause" />
+        </if>
+    </select>
+    <update id="updateByExampleSelective" parameterType="map">
+        update job
+        <set>
+            <if test="record.id != null">
+                id = #{record.id,jdbcType=BIGINT},
+            </if>
+            <if test="record.name != null">
+                name = #{record.name,jdbcType=VARCHAR},
+            </if>
+            <if test="record.type != null">
+                job_type_id =
+                #{record.type,jdbcType=OTHER,typeHandler=com.meowlomo.ems.typehandler.JobTypeTypeHandler},
+            </if>
+            <if test="record.description != null">
+                description = #{record.description,jdbcType=VARCHAR},
+            </if>
+            <if test="record.priority != null">
+                priority = #{record.priority,jdbcType=INTEGER},
+            </if>
+            <if test="record.status != null">
+                status_id =
+                #{record.status,jdbcType=OTHER,typeHandler=com.meowlomo.ems.typehandler.StatusTypeHandler},
+            </if>
+            <if test="record.parameter != null">
+                parameter =
+                #{record.parameter,jdbcType=OTHER,typeHandler=com.meowlomo.ems.typehandler.JsonNodeTypeHandler},
+            </if>
+            <if test="record.group != null">
+                group_id =
+                #{record.group,jdbcType=OTHER,typeHandler=com.meowlomo.ems.typehandler.GroupTypeHandler},
+            </if>
+        </set>
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause" />
+        </if>
+    </update>
+    <update id="updateByExample" parameterType="map">
+        update job
+        set id = #{record.id,jdbcType=BIGINT},
+        name = #{record.name,jdbcType=VARCHAR},
+        job_type_id =
+        #{record.type,jdbcType=OTHER,typeHandler=com.meowlomo.ems.typehandler.JobTypeTypeHandler},
+        description =
+        #{record.description,jdbcType=VARCHAR},
+        priority = #{record.priority,jdbcType=INTEGER},
+        status_id =
+        #{record.status,jdbcType=OTHER,typeHandler=com.meowlomo.ems.typehandler.StatusTypeHandler},
+        parameter =
+        #{record.parameter,jdbcType=OTHER,typeHandler=com.meowlomo.ems.typehandler.JsonNodeTypeHandler},
+        group_id =
+        #{record.group,jdbcType=OTHER,typeHandler=com.meowlomo.ems.typehandler.GroupTypeHandler}
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause" />
+        </if>
+    </update>
+    <update id="updateByPrimaryKeySelective" parameterType="com.meowlomo.ems.core.model.Job">
+        update job
+        <set>
+            <if test="name != null">
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="type != null">
+                job_type_id =
+                #{type,jdbcType=OTHER,typeHandler=com.meowlomo.ems.typehandler.JobTypeTypeHandler},
+            </if>
+            <if test="description != null">
+                description = #{description,jdbcType=VARCHAR},
+            </if>
+            <if test="priority != null">
+                priority = #{priority,jdbcType=INTEGER},
+            </if>
+            <if test="status != null">
+                status_id =
+                #{status,jdbcType=OTHER,typeHandler=com.meowlomo.ems.typehandler.StatusTypeHandler},
+            </if>
+            <if test="parameter != null">
+                parameter =
+                #{parameter,jdbcType=OTHER,typeHandler=com.meowlomo.ems.typehandler.JsonNodeTypeHandler},
+            </if>
+            <if test="group != null">
+                group_id =
+                #{group,jdbcType=OTHER,typeHandler=com.meowlomo.ems.typehandler.GroupTypeHandler},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.meowlomo.ems.core.model.Job">
+        update job
+        set name = #{name,jdbcType=VARCHAR},
+        job_type_id =
+        #{type,jdbcType=OTHER,typeHandler=com.meowlomo.ems.typehandler.JobTypeTypeHandler},
+        description =
+        #{description,jdbcType=VARCHAR},
+        priority = #{priority,jdbcType=INTEGER},
+        status_id =
+        #{status,jdbcType=OTHER,typeHandler=com.meowlomo.ems.typehandler.StatusTypeHandler},
+        parameter =
+        #{parameter,jdbcType=OTHER,typeHandler=com.meowlomo.ems.typehandler.JsonNodeTypeHandler},
+        group_id =
+        #{group,jdbcType=OTHER,typeHandler=com.meowlomo.ems.typehandler.GroupTypeHandler}
+        where id =
+        #{id,jdbcType=BIGINT}
+    </update>
+    <select id="selectByExampleWithRowbounds" parameterType="com.meowlomo.ems.core.model.JobExample" resultMap="BaseResultMap">
+        select
+        <if test="distinct">
+            distinct
+        </if>
+        <include refid="Base_Column_List" />
+        from job
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause" />
+        </if>
+        <if test="orderByClause != null">
+            order by ${orderByClause}
+        </if>
+    </select>
+</mapper>

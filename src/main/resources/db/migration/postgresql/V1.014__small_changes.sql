@@ -1,0 +1,1 @@
+ALTER TABLE "task_worker_link" ALTER COLUMN active SET DEFAULT true;
